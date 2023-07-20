@@ -8,9 +8,7 @@ const main = async (argv) => {
 
   let text;
 
-  if (argv._.length) {
-    text = argv._.join(" ");
-  }
+  if (argv._.length) { text = argv._.join(" ") }
 
   const readline = createInterface({
     input: process.stdin,
@@ -23,10 +21,8 @@ const main = async (argv) => {
     });
   }
 
-  if (argv['dry-run'] !== true) {
-    const conversationId = await chargeGPT.start();
-    console.log(`got conversationId=${conversationId}`);
-  }
+  const conversationId = await chargeGPT.start();
+  console.log(`got conversationId=${conversationId}`);
 
   let moveOn = true;
 
@@ -37,20 +33,12 @@ const main = async (argv) => {
       text = await ask();
     }
 
-    if (argv['dry-run'] === true) {
-      console.log(`will ask: "${text}"`);
-      result = 'dummy response';
-    } else {
-      result = await chargeGPT.request(text);
-    }
+    result = await chargeGPT.request(text);
 
     console.log(`> ChargeGPT: ${result.prompt}`);
 
     if (result.isEnd || result.isError) {
       console.log(JSON.stringify(result.results));
-    }
-
-    if (text === "exit" || result.isError || result.isEnd) {
       moveOn = false;
     }
 
