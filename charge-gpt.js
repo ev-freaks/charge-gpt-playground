@@ -33,6 +33,12 @@ export default class ChargeGPT {
   }
 
   async request(text) {
-    return doRequest(text, this.conversationId);
+    const response = await doRequest(text, this.conversationId);
+
+    if (response.conversationId) {
+      this.conversationId = response.conversationId;
+    }
+
+    return response;
   }
 };
