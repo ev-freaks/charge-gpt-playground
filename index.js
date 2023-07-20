@@ -27,18 +27,17 @@ const main = async (argv) => {
   let moveOn = true;
 
   do {
-    let result;
 
     if (text === undefined) {
       text = await ask();
     }
 
-    result = await chargeGPT.request(text);
+    const result = await chargeGPT.request(text);
 
     console.log(`> ChargeGPT: ${result.prompt}`);
 
-    if (result.isEnd || result.isError) {
-      console.log(JSON.stringify(result.results));
+    if (result['isEnd'] || result['isError']) {
+      console.log(JSON.stringify(result['results']));
       moveOn = false;
     }
 
@@ -56,6 +55,6 @@ main(argv).then(() => {
   process.exit(0);
 }).catch(err => {
   console.error(`ERROR: ${err.message}`);
-  console.error(err);
+  if (argv['debug']) console.error(err);
   process.exit(1);
 });
