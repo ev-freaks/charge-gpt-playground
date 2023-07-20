@@ -23,6 +23,11 @@ const main = async (argv) => {
     });
   }
 
+  if (argv['dry-run'] !== true) {
+    const conversationId = await chargeGPT.start();
+    console.log(`got conversationId=${conversationId}`);
+  }
+
   let moveOn = true;
 
   do {
@@ -38,9 +43,14 @@ const main = async (argv) => {
     } else {
       result = await chargeGPT.request(text);
     }
-    console.log(result);
 
-    if (text === "exit") {
+    console.log(`> ChargeGPT: ${result.prompt}`);
+
+    if (result.isEnd || result.isError) {
+      console.log(JSON.stringify(result.results));
+    }
+
+    if (text === "exit" || result.isError || result.isEnd) {
       moveOn = false;
     }
 

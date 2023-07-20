@@ -2,6 +2,7 @@ import axios, { AxiosHeaders } from 'axios'
 
 const endpoints = {
   ask: 'charge-gpt/ask',
+  start: 'charge-gpt/start',
 };
 
 const apiUrlBase = 'https://api.fronyx.io/api';
@@ -24,6 +25,19 @@ const doRequest = async (text, conversationId) => {
     });
 }
 
+const doStart = async (language, currentTimestamp = Date.now()) => {
+
+  const apiUrl = `${apiUrlBase}/${endpoints.start}`;
+  return axios.get(apiUrl,
+    {
+      params: { language, currentTimestamp },
+      headers: new AxiosHeaders({ 'x-api-token': _apiKey }),
+    })
+  .then((response) => {
+    return response.data.conversationId;
+  });
+}
+
 let _apiKey;
 
 export default class ChargeGPT {
@@ -32,13 +46,18 @@ export default class ChargeGPT {
     this.conversationId = undefined;
   }
 
-  async request(text) {
-    const response = await doRequest(text, this.conversationId);
+  async start(language = 'en') {
+    const conversationId = await doStart(language);
+    this.conversationId = conversationId;
 
-    if (response.conversationId) {
-      this.conversationId = response.conversationId;
+    return conversationId;
+  }
+
+  async request(text) {
+    if (!this.conversationId) {
+      await this.start();
     }
 
-    return response;
+    return await doRequest(text, this.conversationId);
   }
 };
