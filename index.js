@@ -21,7 +21,7 @@ const main = async (argv) => {
     });
   }
 
-  const conversationId = await chargeGPT.start();
+  const conversationId = await chargeGPT.start(argv['lang']);
   console.log(`got conversationId=${conversationId}`);
 
   let moveOn = true;
