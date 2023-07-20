@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosHeaders } from 'axios'
 
 const endpoints = {
   ask: 'charge-gpt/ask',
@@ -17,15 +17,12 @@ const doRequest = async (text, conversationId) => {
       body,
     {
       params: conversationId ? { conversationId } : undefined,
-      headers: {
-        'x-api-token': _apiKey,
-      }
+      headers: new AxiosHeaders({ 'x-api-token': _apiKey }),
     })
     .then((response) => {
       return response.data;
     });
 }
-
 
 let _apiKey;
 
