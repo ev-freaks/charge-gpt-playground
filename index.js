@@ -37,7 +37,7 @@ const main = async (argv) => {
     console.log(`> ChargeGPT: ${result.prompt}`);
 
     if (result['isEnd'] || result['isError']) {
-      console.log(JSON.stringify(result['results']));
+      console.log(JSON.stringify(result['results'], undefined, argv['pretty'] ? 1 : undefined));
       moveOn = false;
     }
 
